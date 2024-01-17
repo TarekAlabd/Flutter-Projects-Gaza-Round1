@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ecommerce_app_knowledge/models/product_item_model.dart';
 import 'package:flutter_ecommerce_app_knowledge/utils/app_routes.dart';
 import 'package:flutter_ecommerce_app_knowledge/view_models/payment_cubit/payment_cubit.dart';
+import 'package:flutter_ecommerce_app_knowledge/view_models/product_details_cubit/product_details_cubit.dart';
 import 'package:flutter_ecommerce_app_knowledge/views/pages/add_payment_card.dart';
 import 'package:flutter_ecommerce_app_knowledge/views/pages/custom_bottom_navbar.dart';
 import 'package:flutter_ecommerce_app_knowledge/views/pages/login_page.dart';
 import 'package:flutter_ecommerce_app_knowledge/views/pages/my_orders_page.dart';
 import 'package:flutter_ecommerce_app_knowledge/views/pages/payment_page.dart';
 import 'package:flutter_ecommerce_app_knowledge/views/pages/product_details_page.dart';
+import 'package:flutter_ecommerce_app_knowledge/views/pages/register_page.dart';
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -17,14 +19,26 @@ class AppRouter {
         final ProductItemModel productDetailsArguments =
             settings.arguments as ProductItemModel;
         return MaterialPageRoute(
-          builder: (_) => ProductDetailsPage(
-            productItem: productDetailsArguments,
+          builder: (_) => BlocProvider(
+            create: (context) {
+              final cubit = ProductDetailsCubit();
+              cubit.getProductDetails(productDetailsArguments.id);
+              return cubit;
+            },
+            child: ProductDetailsPage(
+              productId: productDetailsArguments.id,
+            ),
           ),
           settings: settings,
         );
       case AppRoutes.login:
         return MaterialPageRoute(
           builder: (_) => const LoginPage(),
+          settings: settings,
+        );
+      case AppRoutes.register:
+        return MaterialPageRoute(
+          builder: (_) => const RegisterAccountPage(),
           settings: settings,
         );
       case AppRoutes.home:

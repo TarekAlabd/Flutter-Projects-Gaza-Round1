@@ -22,8 +22,9 @@ class CartPage extends StatelessWidget {
             child: CircularProgressIndicator.adaptive(),
           );
         } else if (state is CartLoaded) {
-          return SingleChildScrollView(
-            child: Column(
+          return RefreshIndicator(
+            onRefresh: () => BlocProvider.of<CartCubit>(context).getCartItems(),
+            child: ListView(
               children: [
                 ListView.builder(
                   itemCount: state.cartItems.length,
@@ -31,7 +32,7 @@ class CartPage extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     final item = state.cartItems[index];
-                    return CartItemWidget(productItem: item);
+                    return CartItemWidget(addToCartItem: item);
                   },
                 ),
                 const SizedBox(height: 24),

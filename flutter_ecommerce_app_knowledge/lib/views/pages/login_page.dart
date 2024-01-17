@@ -271,7 +271,8 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () => Navigator.of(context)
+                              .pushNamed(AppRoutes.register),
                           child: Text(
                             'Register',
                             style: Theme.of(context)

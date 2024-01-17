@@ -17,7 +17,7 @@ final class QuantityCounterLoaded extends CartState {
 }
 
 final class CartLoaded extends CartState {
-  final List<ProductItemModel> cartItems;
+  final List<AddToCartModel> cartItems;
   final double subtotal;
 
   CartLoaded({

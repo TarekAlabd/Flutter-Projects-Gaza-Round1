@@ -24,10 +24,10 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<void> register(String email, String password) async {
+  Future<void> register(String email, String password, String username) async {
     emit(AuthLoading());
     try {
-      final result = await _authServices.register(email, password);
+      final result = await _authServices.register(email, password, username);
       if (result) {
         final user = await _authServices.getUser();
         emit(AuthSuccess(user!));

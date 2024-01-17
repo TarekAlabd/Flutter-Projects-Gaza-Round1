@@ -1,16 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_ecommerce_app_knowledge/models/add_to_cart_model.dart';
 import 'package:flutter_ecommerce_app_knowledge/models/product_item_model.dart';
 import 'package:flutter_ecommerce_app_knowledge/utils/app_colors.dart';
 import 'package:flutter_ecommerce_app_knowledge/view_models/cart_cubit/cart_cubit.dart';
 import 'package:flutter_ecommerce_app_knowledge/views/widgets/counter_widget.dart';
 
 class CartItemWidget extends StatelessWidget {
-  final ProductItemModel productItem;
+  final AddToCartModel addToCartItem;
   const CartItemWidget({
     super.key,
-    required this.productItem,
+    required this.addToCartItem,
   });
 
   @override
@@ -36,7 +37,7 @@ class CartItemWidget extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8.0),
                     child: CachedNetworkImage(
-                      imageUrl: productItem.imgUrl,
+                      imageUrl: addToCartItem.product.imgUrl,
                       fit: BoxFit.cover,
                       height: 120,
                       width: 200,
@@ -57,7 +58,9 @@ class CartItemWidget extends StatelessWidget {
                         size: 30,
                       ),
                       color: AppColors.red,
-                      onPressed: () => cartCubit.removeFromCart(productItem.id),
+                      onPressed: () {},
+                      // onPressed: () =>
+                      //     cartCubit.removeFromCart(addToCartItem.id),
                     ),
                   ),
                 ),
@@ -68,7 +71,7 @@ class CartItemWidget extends StatelessWidget {
                     bloc: cartCubit,
                     buildWhen: (previous, current) =>
                         (current is QuantityCounterLoaded &&
-                            current.productId == productItem.id) ||
+                            current.productId == addToCartItem.id) ||
                         current is CartLoaded,
                     builder: (context, state) {
                       if (state is QuantityCounterLoaded) {
@@ -76,15 +79,15 @@ class CartItemWidget extends StatelessWidget {
                           key: Key(state.productId),
                           cubit: BlocProvider.of<CartCubit>(context),
                           value: state.value,
-                          productItem: productItem,
+                          productItem: addToCartItem.product,
                         );
                       } else if (state is CartLoaded) {
                         return CounterWidget(
                             cubit: BlocProvider.of<CartCubit>(context),
-                            productItem: productItem,
+                            productItem: addToCartItem.product,
                             value: state.cartItems
                                 .firstWhere(
-                                  (item) => item.id == productItem.id,
+                                  (item) => item.id == addToCartItem.id,
                                 )
                                 .quantity);
                       } else {
@@ -104,12 +107,12 @@ class CartItemWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    productItem.name,
+                    addToCartItem.product.name,
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                   ),
-                  if (productItem.size != null)
+                  if (addToCartItem.size != null)
                     Text.rich(
                       TextSpan(
                         text: 'Size: ',
@@ -119,7 +122,7 @@ class CartItemWidget extends StatelessWidget {
                                 ),
                         children: [
                           TextSpan(
-                            text: productItem.size!.name,
+                            text: addToCartItem.size!.name,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ],
@@ -128,7 +131,7 @@ class CartItemWidget extends StatelessWidget {
                 ],
               ),
               Text(
-                '\$${productItem.price}',
+                '\$${addToCartItem.product.price * addToCartItem.quantity}',
                 style: Theme.of(context).textTheme.titleLarge!.copyWith(
                       fontWeight: FontWeight.w600,
                     ),

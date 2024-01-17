@@ -1,13 +1,11 @@
-import 'dart:convert';
-
-enum Size {
+enum ProductSize {
   S,
   M,
   L,
   XL;
 
-  factory Size.fromString(String size) {
-    return Size.values.firstWhere((element) => element.name == size);
+  factory ProductSize.fromString(String size) {
+    return ProductSize.values.firstWhere((element) => element.name == size);
   }
 }
 
@@ -20,8 +18,9 @@ class ProductItemModel {
   final double price;
   final String category;
   final int quantity;
-  final Size? size;
+  final ProductSize? size;
   final bool isAddedToCart;
+  final double averageRate;
 
   const ProductItemModel({
     required this.id,
@@ -35,6 +34,7 @@ class ProductItemModel {
     this.quantity = 0,
     this.size,
     this.isAddedToCart = false,
+    this.averageRate = 0.0,
   });
 
   ProductItemModel copyWith({
@@ -46,8 +46,9 @@ class ProductItemModel {
     double? price,
     String? category,
     int? quantity,
-    Size? size,
+    ProductSize? size,
     bool? isAddedToCart,
+    double? averageRate,
   }) {
     return ProductItemModel(
       id: id ?? this.id,
@@ -60,6 +61,7 @@ class ProductItemModel {
       quantity: quantity ?? this.quantity,
       size: size ?? this.size,
       isAddedToCart: isAddedToCart ?? this.isAddedToCart,
+      averageRate: averageRate ?? this.averageRate,
     );
   }
 
@@ -74,6 +76,7 @@ class ProductItemModel {
     result.addAll({'price': price});
     result.addAll({'category': category});
     result.addAll({'quantity': quantity});
+    result.addAll({'averageRate': averageRate});
     if (size != null) {
       result.addAll({'size': size!.name});
     }
@@ -93,8 +96,9 @@ class ProductItemModel {
       price: data['price']?.toDouble() ?? 0.0,
       category: data['category'] ?? '',
       quantity: data['quantity']?.toInt() ?? 0,
-      size: data['size'] != null ? Size.fromString(data['size']) : null,
+      size: data['size'] != null ? ProductSize.fromString(data['size']) : null,
       isAddedToCart: data['isAddedToCart'] ?? false,
+      averageRate: data['averageRate'] ?? 0.0,
     );
   }
 
@@ -113,7 +117,7 @@ List<ProductItemModel> dummyProducts = [
     category: 'Groceries',
     isAddedToCart: true,
     quantity: 5,
-    size: Size.M,
+    size: ProductSize.M,
   ),
   const ProductItemModel(
     id: '3RCFbH0YzNO9r5WWMDlt',
@@ -121,7 +125,7 @@ List<ProductItemModel> dummyProducts = [
     imgUrl: 'https://pngimg.com/d/onion_PNG99213.png',
     price: 10,
     category: 'Groceries',
-    size: Size.M,
+    size: ProductSize.M,
   ),
   const ProductItemModel(
     id: 'oI1O8SI2Y9Oou4BB7FBE',
@@ -129,7 +133,7 @@ List<ProductItemModel> dummyProducts = [
     imgUrl: 'https://pngfre.com/wp-content/uploads/apple-43-1024x1015.png',
     price: 10,
     category: 'Fruits',
-    size: Size.M,
+    size: ProductSize.M,
   ),
   const ProductItemModel(
     id: 'poohR3IUcGSh39qef5D4',
@@ -138,7 +142,7 @@ List<ProductItemModel> dummyProducts = [
         'https://parspng.com/wp-content/uploads/2022/05/orangepng.parspng.com_-1.png',
     price: 10,
     category: 'Fruits',
-    size: Size.M,
+    size: ProductSize.M,
   ),
   const ProductItemModel(
     id: '8e0vTogfe65seQhH1MCh',
@@ -147,7 +151,7 @@ List<ProductItemModel> dummyProducts = [
         'https://static.vecteezy.com/system/resources/previews/015/100/096/original/bananas-transparent-background-free-png.png',
     price: 10,
     category: 'Fruits',
-    size: Size.M,
+    size: ProductSize.M,
   ),
   const ProductItemModel(
     id: 'Ms6gJsoejYd3H4LTjbYO',
@@ -155,7 +159,7 @@ List<ProductItemModel> dummyProducts = [
     imgUrl: 'https://purepng.com/public/uploads/large/mango-tgy.png',
     price: 10,
     category: 'Fruits',
-    size: Size.M,
+    size: ProductSize.M,
   ),
   const ProductItemModel(
     id: 'gICo8QELkuwehmNlt8G6',
@@ -164,6 +168,6 @@ List<ProductItemModel> dummyProducts = [
         'https://www.usherbrand.com/cdn/shop/products/5uYjJeWpde9urtZyWKwFK4GHS6S3thwKRuYaMRph7bBDyqSZwZ_87x1mq24b2e7_1800x1800.png',
     price: 15,
     category: 'Clothes',
-    size: Size.M,
+    size: ProductSize.M,
   ),
 ];
