@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ecommerce_app_knowledge/utils/app_colors.dart';
+import 'package:flutter_ecommerce_app_knowledge/utils/app_routes.dart';
 import 'package:flutter_ecommerce_app_knowledge/view_models/payment_cubit/payment_cubit.dart';
+import 'package:flutter_ecommerce_app_knowledge/views/widgets/clickable_box_widget.dart';
 import 'package:flutter_ecommerce_app_knowledge/views/widgets/payment_modal_bottom_sheet.dart';
 import 'package:flutter_ecommerce_app_knowledge/views/widgets/product_item_payment_widget.dart';
 
@@ -11,20 +13,27 @@ class PaymentPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = BlocProvider.of<PaymentCubit>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Payment'),
         centerTitle: true,
       ),
       body: BlocBuilder<PaymentCubit, PaymentState>(
-        bloc: BlocProvider.of<PaymentCubit>(context),
-        buildWhen: (previous, current) => current is PaymentLoaded || current is PaymentLoading || current is PaymentError,
+        bloc: cubit,
+        buildWhen: (previous, current) =>
+            current is PaymentLoaded ||
+            current is PaymentLoading ||
+            current is PaymentError,
         builder: (context, state) {
           if (state is PaymentLoading) {
             return const Center(
               child: CircularProgressIndicator.adaptive(),
             );
           } else if (state is PaymentLoaded) {
+            final location = state.location;
+            final cartItems = state.cartItems;
+            final total = state.total;
             return SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -36,26 +45,48 @@ class PaymentPage extends StatelessWidget {
                     buildInlineHeadlines(
                       context: context,
                       title: 'Address',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pushNamed(AppRoutes.locationPage);
+                        // if (!mounted) return;
+                        // setState(() {});
+                      },
                     ),
                     const SizedBox(height: 8.0),
-                    InkWell(
-                      onTap: () {},
-                      child: Container(
-                        width: double.infinity,
-                        height: 100,
-                        decoration: BoxDecoration(
-                          color: AppColors.grey.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        child: const Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Center(
-                            child: Text('Add Address'),
+                    if (location != null)
+                      ClickableBoxWidget(
+                        title: location.cityName,
+                        imgUrl: location.imgUrl,
+                        subTitle:
+                            '${location.cityName}, ${location.countryName}',
+                        onTap: () async {
+                          await Navigator.of(context, rootNavigator: true)
+                              .pushNamed(AppRoutes.locationPage);
+                          await cubit.getPaymentViewData();
+                          // if (!mounted) return;
+                          // setState(() {});
+                        },
+                      ),
+                    if (location == null)
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(AppRoutes.locationPage);
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            color: AppColors.grey.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Center(
+                              child: Text('Add Address'),
+                            ),
                           ),
                         ),
                       ),
-                    ),
                     const SizedBox(height: 16.0),
                     buildInlineHeadlines(
                       context: context,
@@ -68,7 +99,7 @@ class PaymentPage extends StatelessWidget {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
-                        final item = state.cartItems[index];
+                        final item = cartItems[index];
 
                         return ProductItemPaymentWidget(item: item);
                       },
@@ -115,7 +146,7 @@ class PaymentPage extends StatelessWidget {
                                   ),
                         ),
                         Text(
-                          '\$${state.total}',
+                          '\$$total',
                           style: Theme.of(context).textTheme.labelLarge,
                         ),
                       ],

@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_ecommerce_app_knowledge/models/product_item_model.dart';
+import 'package:flutter_ecommerce_app_knowledge/models/add_to_cart_model.dart';
 import 'package:flutter_ecommerce_app_knowledge/utils/app_colors.dart';
 
 class ProductItemPaymentWidget extends StatelessWidget {
-  final ProductItemModel item;
+  final AddToCartModel item;
   const ProductItemPaymentWidget({
     super.key,
     required this.item,
@@ -24,7 +24,7 @@ class ProductItemPaymentWidget extends StatelessWidget {
               color: AppColors.grey.withOpacity(0.4),
             ),
             child: CachedNetworkImage(
-              imageUrl: item.imgUrl,
+              imageUrl: item.product.imgUrl,
             ),
           ),
           const SizedBox(width: 8.0),
@@ -33,7 +33,7 @@ class ProductItemPaymentWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.name,
+                  item.product.name,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
                 Row(
@@ -64,7 +64,7 @@ class ProductItemPaymentWidget extends StatelessWidget {
                         ),
                       ),
                     Text(
-                      '\$${item.price}',
+                      '\$${item.totalPrice}',
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ],

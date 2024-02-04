@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_ecommerce_app_knowledge/models/product_item_model.dart';
 import 'package:flutter_ecommerce_app_knowledge/utils/app_routes.dart';
+import 'package:flutter_ecommerce_app_knowledge/view_models/location_cubit/location_cubit.dart';
 import 'package:flutter_ecommerce_app_knowledge/view_models/payment_cubit/payment_cubit.dart';
 import 'package:flutter_ecommerce_app_knowledge/view_models/product_details_cubit/product_details_cubit.dart';
 import 'package:flutter_ecommerce_app_knowledge/views/pages/add_payment_card.dart';
 import 'package:flutter_ecommerce_app_knowledge/views/pages/custom_bottom_navbar.dart';
+import 'package:flutter_ecommerce_app_knowledge/views/pages/location_page.dart';
 import 'package:flutter_ecommerce_app_knowledge/views/pages/login_page.dart';
 import 'package:flutter_ecommerce_app_knowledge/views/pages/my_orders_page.dart';
 import 'package:flutter_ecommerce_app_knowledge/views/pages/payment_page.dart';
@@ -34,6 +36,18 @@ class AppRouter {
       case AppRoutes.login:
         return MaterialPageRoute(
           builder: (_) => const LoginPage(),
+          settings: settings,
+        );
+      case AppRoutes.locationPage:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) {
+              final cubit = LocationCubit();
+              cubit.getLocations();
+              return cubit;
+            },
+            child: LocationPage(),
+          ),
           settings: settings,
         );
       case AppRoutes.register:
