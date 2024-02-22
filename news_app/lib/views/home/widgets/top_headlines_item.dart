@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:news_app/models/article.dart';
+import 'package:news_app/utils/app_colors.dart';
+import 'package:news_app/view_models/home_cubit/home_cubit.dart';
 
 class TopHeadlinesItem extends StatelessWidget {
   final Article article;
@@ -11,6 +14,7 @@ class TopHeadlinesItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = BlocProvider.of<HomeCubit>(context);
     DateFormat format = DateFormat.yMMMd().add_jm();
     DateTime parsedDate = DateTime.parse(article.publishedAt);
     String publishedAt = format.format(parsedDate);
@@ -20,20 +24,38 @@ class TopHeadlinesItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: Image.network(
-              article.urlToImage,
-              loadingBuilder: (context, child, loadingProgress) =>
-                  loadingProgress == null
-                      ? child
-                      : const CircularProgressIndicator.adaptive(),
-              errorBuilder: (context, error, stackTrace) =>
-                  const Icon(Icons.error),
-              height: 200,
-              width: 300,
-              fit: BoxFit.cover,
-            ),
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.network(
+                  article.urlToImage,
+                  loadingBuilder: (context, child, loadingProgress) =>
+                      loadingProgress == null
+                          ? child
+                          : const CircularProgressIndicator.adaptive(),
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.error),
+                  height: 200,
+                  width: 300,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned(
+                right: 8,
+                top: 8,
+                child: DecoratedBox(
+                  decoration: const BoxDecoration(
+                    color: AppColors.white54,
+                    shape: BoxShape.circle,
+                  ),
+                  child: IconButton(
+                    icon: const Icon(Icons.bookmark_border),
+                    onPressed: () => cubit.saveArticle(article),
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           Padding(

@@ -6,12 +6,6 @@ final class HomeInitial extends HomeState {}
 
 final class TopHeadlinesLoading extends HomeState {}
 
-final class TopHeadlinesLoaded extends HomeState {
-  final TopHeadlinesApiResponse topHeadlinesApiResponse;
-
-  TopHeadlinesLoaded(this.topHeadlinesApiResponse);
-}
-
 final class TopHeadlinesError extends HomeState {
   final String message;
 
@@ -31,3 +25,31 @@ final class SliderHeadlinesError extends HomeState {
 
   SliderHeadlinesError(this.message);
 }
+
+final class SaveArticleError extends HomeState {
+  final String message;
+
+  SaveArticleError(this.message);
+}
+
+final class DeleteArticleError extends HomeState {
+  final String message;
+
+  DeleteArticleError(this.message);
+}
+
+final class GetArticlesError extends HomeState {
+  final String message;
+
+  GetArticlesError(this.message);
+}
+
+final class GetArticlesLoaded extends HomeState {
+  final List<Article> articles;
+
+  GetArticlesLoaded(this.articles);
+}
+
+final class ArticleSaved extends HomeState {}
+
+final class ArticleDeleted extends HomeState {}

@@ -13,4 +13,11 @@ class Source {
       name: map['name'] ?? '',
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'name': name,
+    };
+  }
 }

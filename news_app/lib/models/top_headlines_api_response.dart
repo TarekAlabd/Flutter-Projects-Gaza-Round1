@@ -17,7 +17,7 @@ class TopHeadlinesApiResponse {
       totalResults: json['totalResults'],
       articles: List<Article>.from(
         json['articles'].map(
-          (x) => Article.fromJson(x),
+          (x) => Article.fromMap(x),
         ),
       ),
     );

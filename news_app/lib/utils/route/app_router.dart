@@ -5,6 +5,7 @@ import 'package:news_app/utils/route/app_routes.dart';
 import 'package:news_app/view_models/home_cubit/home_cubit.dart';
 import 'package:news_app/view_models/search_cubit/search_cubit.dart';
 import 'package:news_app/views/article/article_page.dart';
+import 'package:news_app/views/home/bookmarked_page.dart';
 import 'package:news_app/views/home/home_page.dart';
 import 'package:news_app/views/not_found_page.dart';
 import 'package:news_app/views/search/search_page.dart';
@@ -36,6 +37,18 @@ class AppRouter {
       case AppRoutes.article:
         return MaterialPageRoute(
           builder: (_) => const ArticlePage(),
+          settings: settings,
+        );
+      case AppRoutes.bookmarked:
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) {
+              final cubit = HomeCubit();
+              cubit.getBookmarkedArticles();
+              return cubit;
+            },
+            child: const BookMarkedPage(),
+          ),
           settings: settings,
         );
       case AppRoutes.search:

@@ -1,13 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:news_app/models/article.dart';
 import 'package:news_app/models/top_headlines_api_response.dart';
 import 'package:news_app/models/top_headlines_request.dart';
 import 'package:news_app/utils/app_constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class HomeServices {
   Future<TopHeadlinesApiResponse> getUsTopHeadlines();
   Future<TopHeadlinesApiResponse> getTopHeadlines(
       TopHeadlinesRequest requestBody, String authToken);
+  Future<void> saveArticle(Article article);
+  Future<void> deleteArticle(Article article);
+  Future<List<Article>> getArticles();
+  Future<bool> isBookmarked(Article article);
 }
 
 class HomeServicesImpl implements HomeServices {
@@ -57,8 +63,52 @@ class HomeServicesImpl implements HomeServices {
 
     return TopHeadlinesApiResponse.fromJson(response.data!);
   }
-}
 
+  @override
+  Future<void> deleteArticle(Article article) async {
+    final prefs = await SharedPreferences.getInstance();
+    final articles = prefs.getStringList(AppConstants.articlesCache);
+    if (articles != null) {
+      final updatedArticles = articles
+          .where((currentArticle) => currentArticle != article.toJson())
+          .toList();
+      final result = await prefs.setStringList(
+          AppConstants.articlesCache, updatedArticles);
+      if (!result) {
+        throw Exception('Failed to delete article');
+      }
+    } else {
+      throw Exception('There is no bookmarked items!');
+    }
+  }
+
+  @override
+  Future<List<Article>> getArticles() async {
+    final prefs = await SharedPreferences.getInstance();
+    final articles = prefs.getStringList(AppConstants.articlesCache) ?? [];
+    debugPrint(articles.toString());
+    return articles.map((article) => Article.fromJson(article)).toList();
+  }
+
+  @override
+  Future<void> saveArticle(Article article) async {
+    final prefs = await SharedPreferences.getInstance();
+    final articles = prefs.getStringList(AppConstants.articlesCache) ?? [];
+    articles.add(article.toJson());
+    final result =
+        await prefs.setStringList(AppConstants.articlesCache, articles);
+    if (!result) {
+      throw Exception('Failed to save article');
+    }
+  }
+
+  @override
+  Future<bool> isBookmarked(Article article) async {
+    final prefs = await SharedPreferences.getInstance();
+    final articles = prefs.getStringList(AppConstants.articlesCache) ?? [];
+    return articles.any((currentArticle) => currentArticle == article.toJson());
+  }
+}
 
 
 

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:news_app/models/source.dart';
 
 class Article {
@@ -9,6 +11,7 @@ class Article {
   final String urlToImage;
   final String publishedAt;
   final String content;
+  final bool isBookmarked;
 
   Article({
     required this.source,
@@ -19,9 +22,26 @@ class Article {
     required this.urlToImage,
     required this.publishedAt,
     required this.content,
+    this.isBookmarked = false,
   });
 
-  factory Article.fromJson(Map<String, dynamic> map) {
+  Map<String, dynamic> toMap() {
+    final result = <String, dynamic>{};
+
+    result.addAll({'source': source.toMap()});
+    result.addAll({'author': author});
+    result.addAll({'title': title});
+    result.addAll({'description': description});
+    result.addAll({'url': url});
+    result.addAll({'urlToImage': urlToImage});
+    result.addAll({'publishedAt': publishedAt});
+    result.addAll({'content': content});
+    result.addAll({'isBookmarked': isBookmarked});
+
+    return result;
+  }
+
+  factory Article.fromMap(Map<String, dynamic> map) {
     return Article(
       source: Source.fromMap(map['source']),
       author: map['author'] ?? '',
@@ -31,6 +51,36 @@ class Article {
       urlToImage: map['urlToImage'] ?? '',
       publishedAt: map['publishedAt'] ?? '',
       content: map['content'] ?? '',
+      isBookmarked: map['isBookmarked'] ?? false,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Article.fromJson(String source) =>
+      Article.fromMap(json.decode(source));
+
+  Article copyWith({
+    Source? source,
+    String? author,
+    String? title,
+    String? description,
+    String? url,
+    String? urlToImage,
+    String? publishedAt,
+    String? content,
+    bool? isBookmarked,
+  }) {
+    return Article(
+      source: source ?? this.source,
+      author: author ?? this.author,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      url: url ?? this.url,
+      urlToImage: urlToImage ?? this.urlToImage,
+      publishedAt: publishedAt ?? this.publishedAt,
+      content: content ?? this.content,
+      isBookmarked: isBookmarked ?? this.isBookmarked,
     );
   }
 }

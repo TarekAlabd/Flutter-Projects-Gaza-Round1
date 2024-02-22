@@ -73,14 +73,14 @@ class HomePage extends StatelessWidget {
                 bloc: cubit,
                 buildWhen: (previous, current) =>
                     current is TopHeadlinesLoading ||
-                    current is TopHeadlinesLoaded ||
+                    current is GetArticlesLoaded ||
                     current is TopHeadlinesError,
                 builder: (context, state) {
                   if (state is TopHeadlinesLoading) {
                     return const CircularProgressIndicator.adaptive();
-                  } else if (state is TopHeadlinesLoaded) {
+                  } else if (state is GetArticlesLoaded) {
                     final topHeadlineArticles =
-                        state.topHeadlinesApiResponse.articles;
+                        state.articles;
                     return SizedBox(
                       height: size.height * 0.4,
                       child: ListView.builder(
