@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:news_app/utils/app_theme.dart';
 import 'package:news_app/utils/route/app_router.dart';
 import 'package:news_app/utils/route/app_routes.dart';
 
-void main() {
+Future<void> main() async {
+  await init();
   runApp(const MyApp());
+}
+
+Future<void> init() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
 }
 
 class MyApp extends StatelessWidget {
